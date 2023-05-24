@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace='com.human.springboot.HDAO'>
+	<select id='typeList' resultType='com.human.springboot.HDTO'>
+		select type_name, type_num, typeseq from roomtype order by typeseq
+	</select>
+	<insert id="typeinsert">
+		insert into roomtype (type_num, type_name, typeseq)
+		values (#{param1}, #{param2}, typenum.nextval) 
+	</insert>
+	<update id="updateType">
+		update roomtype set type_name=#{param1}, type_num=#{param2}
+			where typeseq=#{param3}
+	</update>
+	<delete id="deleteType">
+		delete from roomtype where typeseq=#{param1}
+	</delete>
+	<select id='infoList' resultType='com.human.springboot.InfoDTO'>
+		select seq_room, info_num, info_name, b.type_name, stay_num, stay_price
+		 from roominfo a, roomtype b
+		 where a.room_type = b.type_num
+		 order by seq_room
+	</select>
+	<select id='viewInfo' resultType='com.human.springboot.InfoDTO'>
+		select seq_room, info_num, info_name, b.type_name, stay_num, stay_price
+		 from roominfo a, roomtype b
+		 where a.room_type = b.type_num
+		 and seq_room=#{param1}
+		 order by seq_room
+	</select>
+	<insert id="infoinsert">
+		insert into roominfo (info_num, room_type, info_name, stay_num, stay_price, seq_room)
+			values(#{param1},#{param2},#{param3},#{param4},#{param5},infoseq.nextval)
+	</insert>
+	<update id="updateInfo">
+		update roominfo set info_num=#{param1}, info_name=#{param2}, room_type=#{param3}, stay_num=#{param4}, stay_price=#{param5}
+			where seq_room=#{param6}
+	</update>
+	<delete id="deleteInfo">
+		delete from roominfo where seq_room=#{param1}
+	</delete>
+	<select id="bookList" resultType="com.human.springboot.BookDTO">
+		select a.checkin, a.checkout, a.booker, a.mobile, a.stay_num, a.stay_price, b.info_name, c.type_name, a.seq_book, b.info_num
+		 from book a,roominfo b,roomtype c
+		 where a.seq_room = b.seq_room
+		 and b.room_type = c.type_num
+		  order by a.seq_book
+	</select>
+	<insert id="bookInsert">
+		insert into book values(bookseq.nextval, #{param1}, #{param2}, #{param3}, #{param4}, #{param5}, #{param6}, #{param7})
+	</insert>
+	<update id="bookUpdate">
+		update book set checkin=#{param1}, checkout=#{param2}, seq_room=#{param3}, booker=#{param4}, mobile=#{param5}, stay_num=#{param6}, stay_price=#{param7}
+		 where seq_book=#{param8}
+	</update>
+	<delete id="bookDelete">
+		delete from book where seq_book=#{param1}
+	</delete>
+</mapper>
